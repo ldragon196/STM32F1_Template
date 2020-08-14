@@ -61,10 +61,11 @@ enum _STM32F103_GPIO_PORT_{
 									           GPIO_PortSourceGPIOC  \
 								             }				 
 											 
-#define MAX_UART_COUNT                       3
+#define UART_MAX_COUNT                       3
 #define COM_UART_CONFIG                      {USART1, USART2, USART3}
 
-
+#define I2C_MAX_COUNT                        2
+#define I2C_CONFIG                           {I2C1, I2C2}
 
 											 
 
@@ -88,6 +89,28 @@ enum _STM32F103_GPIO_PORT_{
 #define COM_USART3_TX_PIN                    10
 #define COM_USART3_RX_PORT                   GPIO_PORTB
 #define COM_USART3_RX_PIN                    11
+
+// I2C
+#if(I2C1_REMAP_ENABLED)
+#define I2C1_SCL_PORT                        GPIO_PORTB
+#define I2C1_SCL_PIN                         8
+#define I2C1_SDA_PORT                        GPIO_PORTB
+#define I2C1_SDA_PIN                         9
+#else
+#define I2C1_SCL_PORT                        GPIO_PORTB
+#define I2C1_SCL_PIN                         6
+#define I2C1_SDA_PORT                        GPIO_PORTB
+#define I2C1_SDA_PIN                         7
+#endif
+
+#define I2C2_SCL_PORT                        GPIO_PORTB
+#define I2C2_SCL_PIN                         10
+#define I2C2_SDA_PORT                        GPIO_PORTB
+#define I2C2_SDA_PIN                         11
+
+
+
+
 
 
 

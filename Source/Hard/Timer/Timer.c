@@ -56,7 +56,7 @@ static TimerIRQHandler TimerHandler[TIMER_MAX] = {0};
 
 void TIMER_Init(TimerBase_t* timer, TimerConfig_t* config){
 	/* TIMx clock enable */
-	if(timer->Id == TIMER_1){   // TIM1 or TIM8
+	if( (timer->Timer == TIM1) || (timer->Timer == TIM8) ){   // TIM1 or TIM8
 		RCC_APB2PeriphClockCmd(timer->TimerRCC, ENABLE);
 	}
 	else{
@@ -110,7 +110,7 @@ uint16_t TIMER_GetCounter(TimerBase_t* timer){
 #if(TIMER1_IRQ_ENABLED&TIMER1_ENABLED)
 void TIM1_UP_IRQHandler(void){
 	if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET){
-		CALLBACK_VOID(TimerHandler[TIMER_1]);
+		CALLBACK_VOID(TimerHandler[TIMER_ID_1]);
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
 }
@@ -119,7 +119,7 @@ void TIM1_UP_IRQHandler(void){
 #if(TIMER2_IRQ_ENABLED&TIMER2_ENABLED)
 void TIM2_IRQHandler(void){
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET){
-		CALLBACK_VOID(TimerHandler[TIMER_2]);
+		CALLBACK_VOID(TimerHandler[TIMER_ID_2]);
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     }
 }
@@ -128,15 +128,21 @@ void TIM2_IRQHandler(void){
 #if(TIMER3_IRQ_ENABLED&TIMER3_ENABLED)
 void TIM3_IRQHandler(void){
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET){
-		CALLBACK_VOID(TimerHandler[TIMER_3]);
+		CALLBACK_VOID(TimerHandler[TIMER_ID_3]);
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
     }
 }
 #endif
 
 
-
-
+#if(TIMER4_IRQ_ENABLED&TIMER4_ENABLED)
+void TIM4_IRQHandler(void){
+	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET){
+		CALLBACK_VOID(TimerHandler[TIMER_ID_4]);
+        TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+    }
+}
+#endif
 
 #endif
 

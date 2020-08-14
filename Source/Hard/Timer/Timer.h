@@ -27,19 +27,19 @@ typedef void (*TimerIRQHandler)(void);
 
 enum{
 	#if(TIMER1_ENABLED)
-	TIMER_1 = 0,
+	TIMER_ID_1 = 0,
 	#endif
 	
 	#if(TIMER2_ENABLED)
-	TIMER_2 = 1,
+	TIMER_ID_2 = 1,
 	#endif
 	
 	#if(TIMER3_ENABLED)
-	TIMER_3 = 2,
+	TIMER_ID_3 = 2,
 	#endif
 	
 	#if(TIMER4_ENABLED)
-	TIMER_4 = 3,
+	TIMER_ID_4 = 3,
 	#endif
 	
 	TIMER_MAX
@@ -63,7 +63,7 @@ typedef struct{
 
 #define TIMER1_8_INSTANCE(num)                          \
 {                                                       \
-	.Id = CONCAT_2_(TIMER_, num),                       \
+	.Id = CONCAT_2_(TIMER_ID_, num),                       \
 	.IRQChannel = CONCAT_3_(TIM, num, _UP_IRQn),        \
 	.TimerRCC = CONCAT_2_(RCC_APB2Periph_TIM, num),     \
 	.Timer = CONCAT_2_(TIM, num),                       \
@@ -72,7 +72,7 @@ typedef struct{
 
 #define TIMER2_5_INSTANCE(num)                          \
 {                                                       \
-	.Id = CONCAT_2_(TIMER_, num),                       \
+	.Id = CONCAT_2_(TIMER_ID_, num),                       \
 	.IRQChannel = CONCAT_3_(TIM, num, _IRQn),           \
 	.TimerRCC = CONCAT_2_(RCC_APB1Periph_TIM, num),     \
 	.Timer = CONCAT_2_(TIM, num),                       \

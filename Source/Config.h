@@ -188,7 +188,7 @@
 
 
 #ifndef WDG_TIMEOUT_MS
-#define WDG_TIMEOUT_MS 1000
+#define WDG_TIMEOUT_MS 3000
 #endif
 
 // </e>
@@ -349,7 +349,7 @@
 // <e> TIMER_ENABLED - Timer driver
 //==========================================================
 #ifndef TIMER_ENABLED
-#define TIMER_ENABLED 0
+#define TIMER_ENABLED 1
 #endif
 
 // <o> TIMER_IRQ_PRIORITY  - Timer interrupt priority
@@ -367,14 +367,14 @@
 // <e> TIMER1_ENABLED - Timer instance 1
 //==========================================================
 #ifndef TIMER1_ENABLED
-#define TIMER1_ENABLED 0
+#define TIMER1_ENABLED 1
 #endif
 
 // <q> TIMER1_IRQ_ENABLED  - Timer 1 IRQ enable
 
 
 #ifndef TIMER1_IRQ_ENABLED
-#define TIMER1_IRQ_ENABLED 0
+#define TIMER1_IRQ_ENABLED 1
 #endif
 
 // </e>
@@ -382,14 +382,14 @@
 // <e> TIMER2_ENABLED - Timer instance 2
 //==========================================================
 #ifndef TIMER2_ENABLED
-#define TIMER2_ENABLED 0
+#define TIMER2_ENABLED 1
 #endif
 
 // <q> TIMER2_IRQ_ENABLED  - Timer 2 IRQ enable
 
 
 #ifndef TIMER2_IRQ_ENABLED
-#define TIMER2_IRQ_ENABLED 0
+#define TIMER2_IRQ_ENABLED 1
 #endif
 
 // </e>
@@ -397,14 +397,14 @@
 // <e> TIMER3_ENABLED - Timer instance 3
 //==========================================================
 #ifndef TIMER3_ENABLED
-#define TIMER3_ENABLED 0
+#define TIMER3_ENABLED 1
 #endif
 
 // <q> TIMER3_IRQ_ENABLED  - Timer 3 IRQ enable
 
 
 #ifndef TIMER3_IRQ_ENABLED
-#define TIMER3_IRQ_ENABLED 0
+#define TIMER3_IRQ_ENABLED 1
 #endif
 
 // </e>
@@ -412,24 +412,58 @@
 // <e> TIMER4_ENABLED - Timer instance 4
 //==========================================================
 #ifndef TIMER4_ENABLED
-#define TIMER4_ENABLED 0
+#define TIMER4_ENABLED 1
 #endif
 
 // <q> TIMER4_IRQ_ENABLED  - Timer 4 IRQ enable
 
 
 #ifndef TIMER4_IRQ_ENABLED
-#define TIMER4_IRQ_ENABLED 0
+#define TIMER4_IRQ_ENABLED 1
 #endif
 
 // </e>
 
 // </e>
 
+// <e> I2C_ENABLED - I2C driver
+//==========================================================
+#ifndef I2C_ENABLED
+#define I2C_ENABLED 1
+#endif
+
+// <o> I2C_CLOCK_SPEED  - I2C clock speed
+
+#ifndef I2C_CLOCK_SPEED
+#define I2C_CLOCK_SPEED 400000
+#endif
+
+// <o> I2C_ACK_ENABLED  - I2C ACK enabled
+
+// <0=> Disable 
+// <1024=> Enable 
+
+#ifndef I2C_ACK_ENABLED
+#define I2C_ACK_ENABLED 1024
+#endif
 
 
 
+// <q> I2C1_ENABLED  - I2C instance 1
 
+
+#ifndef I2C1_ENABLED
+#define I2C1_ENABLED 1
+#endif
+
+// <q> I2C2_ENABLED  - I2C instance 2
+
+
+#ifndef I2C2_ENABLED
+#define I2C2_ENABLED 0
+#endif
+
+// </e>
 
 
 
@@ -469,6 +503,7 @@
 // <1=> TIMER 1 
 // <2=> TIMER 2 
 // <3=> TIMER 3 
+// <4=> TIMER 4 
 
 #ifndef EVENT_TIMER_USED
 #define EVENT_TIMER_USED 0
@@ -512,7 +547,43 @@
 
 // </h> 
 
+// <h> Components
 
+//==========================================================
+
+// <e> VL53L0X_ENABLED - VL53L0X sensor enable
+
+#ifndef VL53L0X_ENABLED
+#define VL53L0X_ENABLED 1
+#endif
+
+// <q> VL53L0X_DEBUG_ENABLED - VL53L0X debug
+
+
+#ifndef VL53L0X_DEBUG_ENABLED
+#define VL53L0X_DEBUG_ENABLED 1
+#endif
+
+// <o> VL53L0X_I2C_USED  - I2C used
+
+// <1=> I2C 1  
+// <2=> I2C 2 
+
+#ifndef VL53L0X_I2C_USED
+#define VL53L0X_I2C_USED 2
+#endif
+
+// <o> VL53L0X_TIME_MEASURE  - Time measure in ms
+
+#ifndef VL53L0X_TIME_MEASURE
+#define VL53L0X_TIME_MEASURE 10
+#endif
+
+
+
+// </e>
+
+// </h> 
 
 
 
@@ -530,9 +601,9 @@
 
 // <o> DEBUG_UART_COM_CONFIG  - Debug com
 
-// <0=> UART1 
-// <1=> UART2 
-// <2=> UART3 
+// <0=> UART 1 
+// <1=> UART 2 
+// <2=> UART 3 
 
 #ifndef DEBUG_UART_COM_CONFIG
 #define DEBUG_UART_COM_CONFIG 0

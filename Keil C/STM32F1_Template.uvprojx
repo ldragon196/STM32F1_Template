@@ -452,6 +452,16 @@
               <FilePath>..\Source\Hard\WDG\WDG.h</FilePath>
             </File>
             <File>
+              <FileName>I2C.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Hard\I2C\I2C.c</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Hard\I2C\I2C.h</FilePath>
+            </File>
+            <File>
               <FileName>Timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Hard\Timer\Timer.c</FilePath>
@@ -460,16 +470,6 @@
               <FileName>Timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Source\Hard\Timer\Timer.h</FilePath>
-            </File>
-            <File>
-              <FileName>EXTINT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\Hard\EXTINT\EXTINT.c</FilePath>
-            </File>
-            <File>
-              <FileName>EXTINT.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Source\Hard\EXTINT\EXTINT.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -495,6 +495,18 @@
         </Group>
         <Group>
           <GroupName>Components</GroupName>
+          <Files>
+            <File>
+              <FileName>VL53L0X.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Components\VL53L0X\VL53L0X.c</FilePath>
+            </File>
+            <File>
+              <FileName>VL53L0X.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Components\VL53L0X\VL53L0X.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>STM32F10x_StdPeriph_Driver</GroupName>

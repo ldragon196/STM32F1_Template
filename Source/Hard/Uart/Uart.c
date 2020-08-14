@@ -27,7 +27,7 @@
 /*                              PRIVATE DATA                                  */
 /******************************************************************************/
 
-USART_TypeDef* const COM_UART_BASE[MAX_UART_COUNT] = COM_UART_CONFIG;
+USART_TypeDef* const COM_UART_BASE[UART_MAX_COUNT] = COM_UART_CONFIG;
 static UartRxFifo_t UART_RxBuffer[UART_COUNT];
 
 /******************************************************************************/

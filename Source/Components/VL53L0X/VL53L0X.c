@@ -1,7 +1,7 @@
 /*
  * VL53L0X.c
  *
- *  Created on: June 18, 2020
+ *  Created on: August 14, 2020
  *      Author: LongHD
  */
 /******************************************************************************/
@@ -10,10 +10,16 @@
 /*                              INCLUDE FILES                                 */
 /******************************************************************************/
 
-#include "Hard/I2C/I2C.h"
 #include "VL53L0X.h"
 
 #if(VL53L0X_ENABLED)
+
+#if(VL53L0X_DEBUG_ENABLED)
+#define DEBUG_PRINT_ENABLE
+#endif
+#include "Utility/Debug/Debug.h"
+
+#include "Hard/I2C/I2C.h"
 
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
@@ -32,6 +38,7 @@
 /******************************************************************************/
 
 VL53L0X_t VL53L0X;
+I2CBase_t VL52L0X_I2C = I2C_INSTANCE(VL53L0X_I2C_USED);
 
 /******************************************************************************/
 /*                              EXPORTED DATA                                 */
@@ -49,6 +56,22 @@ static uint16_t VL53L0X_DecodeTimeout(uint16_t reg_val);
 static uint32_t VL53L0X_TimeoutMicrosecondsToMclks(uint32_t timeout_period_us, uint8_t vcsel_period_pclks);
 static uint16_t VL53L0X_EncodeTimeout(uint16_t timeout_mclks);
 
+void VL53L0X_WriteReg(uint8_t reg, uint8_t value);
+void VL53L0X_WriteReg16bit(uint8_t reg, uint16_t value);
+void VL53L0X_WriteReg32bit(uint8_t reg, uint16_t value);
+void VL53L0X_WriteMulti(uint8_t reg, uint8_t *data, uint8_t size);
+uint8_t VL53L0X_ReadReg(uint8_t reg);
+uint16_t VL53L0X_ReadReg16bit(uint8_t reg);
+void VL53L0X_ReadMulti(uint8_t reg, uint8_t *output, uint8_t size);
+
+void VL53L0X_SetSignalRateLimit(float mcps);
+uint32_t VL53L0X_GetMeasurementTimingBudget(void);
+void VL53L0X_GetSequenceStepEnables(SequenceStepEnables_t * enables);
+void VL53L0X_GetSequenceStepTimeouts(SequenceStepEnables_t const * enables, SequenceStepTimeouts_t * timeouts);
+uint16_t VL53L0X_GetVcselPulsePeriod(vcselPeriodType type);
+boolean VL53L0X_SetMeasurementTimingBudget(uint32_t budget_us);
+boolean VL53L0X_PerformSingleRefCalibration(uint8_t vhv_init_byte);
+
 /******************************************************************************/
 
 /**
@@ -64,7 +87,7 @@ void VL53L0X_WriteReg(uint8_t reg, uint8_t value){
 	writeData[0] = reg;
 	writeData[1] = value;
 	
-	I2C_WriteData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, writeData, 2);
+	I2C_WriteData(&VL52L0X_I2C, VL53L0X_ADDRESS, writeData, 2);
 }
 
 /**
@@ -81,7 +104,7 @@ void VL53L0X_WriteReg16bit(uint8_t reg, uint16_t value){
 	writeData[1] = (value >> 8) & 0xFF;
 	writeData[2] = value & 0xFF;
 	
-	I2C_WriteData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, writeData, 3);
+	I2C_WriteData(&VL52L0X_I2C, VL53L0X_ADDRESS, writeData, 3);
 }
 
 /**
@@ -100,7 +123,7 @@ void VL53L0X_WriteReg32bit(uint8_t reg, uint16_t value){
 	writeData[3] = (value >> 8) & 0xFF;
 	writeData[4] = value & 0xFF;
 	
-	I2C_WriteData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, writeData, 5);
+	I2C_WriteData(&VL52L0X_I2C, VL53L0X_ADDRESS, writeData, 5);
 }
 
 /**
@@ -116,7 +139,7 @@ void VL53L0X_WriteMulti(uint8_t reg, uint8_t *data, uint8_t size){
 	writeData[0] = reg;
 	memcpy(&writeData[1], data, size);
 	
-	I2C_WriteData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, writeData, size + 1);
+	I2C_WriteData(&VL52L0X_I2C, VL53L0X_ADDRESS, writeData, size + 1);
 }
 
 /**
@@ -129,8 +152,8 @@ void VL53L0X_WriteMulti(uint8_t reg, uint8_t *data, uint8_t size){
 uint8_t VL53L0X_ReadReg(uint8_t reg){
 	uint8_t retVal;
 	
-	I2C_WriteData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, &reg, 1);
-	I2C_ReadData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, &retVal, 1);
+	I2C_WriteData(&VL52L0X_I2C, VL53L0X_ADDRESS, &reg, 1);
+	I2C_ReadData(&VL52L0X_I2C, VL53L0X_ADDRESS, &retVal, 1);
 	
 	return retVal;
 }
@@ -143,10 +166,10 @@ uint8_t VL53L0X_ReadReg(uint8_t reg){
  */
 
 uint16_t VL53L0X_ReadReg16bit(uint8_t reg){
-	I2C_WriteData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, &reg, 1);
+	I2C_WriteData(&VL52L0X_I2C, VL53L0X_ADDRESS, &reg, 1);
 	
 	uint8_t data[2];
-	I2C_ReadData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, data, 2);
+	I2C_ReadData(&VL52L0X_I2C, VL53L0X_ADDRESS, data, 2);
 	
 	return (uint16_t) ((data[0] << 8) | data[1]);
 }
@@ -159,9 +182,9 @@ uint16_t VL53L0X_ReadReg16bit(uint8_t reg){
  */
 
 void VL53L0X_ReadMulti(uint8_t reg, uint8_t *output, uint8_t size){
-	I2C_WriteData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, &reg, 1);
+	I2C_WriteData(&VL52L0X_I2C, VL53L0X_ADDRESS, &reg, 1);
 	
-	I2C_ReadData(VL53L0X_I2C_COM, VL53L0X_ADDRESS, output, size);
+	I2C_ReadData(&VL52L0X_I2C, VL53L0X_ADDRESS, output, size);
 }
 
 /******************************************************************************/
@@ -705,24 +728,6 @@ static boolean VL53L0X_Setup(void){
 	return TRUE;
 }
 
-/**
- * @func   VL53L0X_Init
- * @brief  Initialized VL53L0X
- * @param  None
- * @retval None
- */
-
-uint8_t VL53L0X_Init(void){
-	I2C_InitAsMaster(VL53L0X_I2C_COM);
-	
-	if(VL53L0X_Setup()){
-		VL53L0X_StartContinuous(300);
-		VL53L0X.io_timeout = VL53L0X_TIMEOUT;
-		return VL53L0X_OK;
-	}
-	return VL53L0X_ERROR;
-}
-
 /* Start continuous ranging measurements. If period_ms (optional) is 0 or not
  * given, continuous back-to-back mode is used (the sensor takes measurements as
  * often as possible); otherwise, continuous timed mode is used, with the given
@@ -787,7 +792,7 @@ uint16_t VL53L0X_ReadRangeContinuousMillimeters(void){
 	// fractional ranging is not enabled
 	uint16_t range = VL53L0X_ReadReg16bit(RESULT_RANGE_STATUS + 10);
 	VL53L0X_WriteReg(SYSTEM_INTERRUPT_CLEAR, 0x01);
-
+	
 	return range;
 }
 
@@ -825,24 +830,40 @@ uint16_t VL53L0X_ReadRangeSingleMillimeters(void){
  * @func   VL53L0X_Task
  * @brief  Run VL53L0X task
  * @param  None
- * @retval None
+ * @retval Range
  */
-#include "Hard/Uart/Uart.h"
-void VL53L0X_Task(void){
+
+uint16_t VL53L0X_Task(void){
 	uint16_t range = VL53L0X_ReadRangeContinuousMillimeters();
 	
 	if( VL53L0X_TimeoutOccurred() ){
-		UART_WriteData(COM_USART_1, (uint8_t*) "Timeout\n", strlen("Timeout\n"));
+		DEBUG_PRINTLN("VL53L0X Timeout");
 		VL53L0X_Init();
+		return 0xFFFF;
 	}
 	else{
 		// Handle range
-		UART_WriteData(COM_USART_1, (uint8_t*) &range, 2);
+		DEBUG_PRINTLN("Range %dmm", range);
 	}
+	return range;
 }
 
+/**
+ * @func   VL53L0X_Init
+ * @brief  Initialized VL53L0X
+ * @param  None
+ * @retval None
+ */
 
-
-
+uint8_t VL53L0X_Init(void){
+	I2C_InitAsMaster(&VL52L0X_I2C);
+	
+	VL53L0X.io_timeout = VL53L0X_TIMEOUT;
+	if(VL53L0X_Setup()){
+		VL53L0X_StartContinuous(VL53L0X_TIME_MEASURE);
+		return VL53L0X_OK;
+	}
+	return VL53L0X_ERROR;
+}
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * VL53L0X.h
  *
- *  Created on: June 17, 2020
+ *  Created on: August 14, 2020
  *      Author: LongHD
  */
 /******************************************************************************/
@@ -27,7 +27,7 @@
 #define VL53L0X_MODEL_ID                        0xEE
 #define VL53L0X_REVISION_ID                     0x10
 
-#define VL53L0X_TIMEOUT                         100
+#define VL53L0X_TIMEOUT                         10
 
 // register addresses from API vl53l0x
 enum {
@@ -174,25 +174,8 @@ void VL53L0X_StartContinuous(uint32_t period_ms);
 void VL53L0X_StopContinuous(void);
 uint16_t VL53L0X_ReadRangeContinuousMillimeters(void);
 uint16_t VL53L0X_ReadRangeSingleMillimeters(void);
-void VL53L0X_Task(void);
 boolean VL53L0X_TimeoutOccurred(void);
-
-void VL53L0X_WriteReg(uint8_t reg, uint8_t value);
-void VL53L0X_WriteReg16bit(uint8_t reg, uint16_t value);
-void VL53L0X_WriteReg32bit(uint8_t reg, uint16_t value);
-void VL53L0X_WriteMulti(uint8_t reg, uint8_t *data, uint8_t size);
-uint8_t VL53L0X_ReadReg(uint8_t reg);
-uint16_t VL53L0X_ReadReg16bit(uint8_t reg);
-void VL53L0X_ReadMulti(uint8_t reg, uint8_t *output, uint8_t size);
-
-void VL53L0X_SetSignalRateLimit(float mcps);
-uint32_t VL53L0X_GetMeasurementTimingBudget(void);
-void VL53L0X_GetSequenceStepEnables(SequenceStepEnables_t * enables);
-void VL53L0X_GetSequenceStepTimeouts(SequenceStepEnables_t const * enables, SequenceStepTimeouts_t * timeouts);
-uint16_t VL53L0X_GetVcselPulsePeriod(vcselPeriodType type);
-boolean VL53L0X_SetMeasurementTimingBudget(uint32_t budget_us);
-boolean VL53L0X_PerformSingleRefCalibration(uint8_t vhv_init_byte);
-
+uint16_t VL53L0X_Task(void);
 
 #endif
 
