@@ -452,16 +452,6 @@
               <FilePath>..\Source\Hard\WDG\WDG.h</FilePath>
             </File>
             <File>
-              <FileName>I2C.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\Hard\I2C\I2C.c</FilePath>
-            </File>
-            <File>
-              <FileName>I2C.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Source\Hard\I2C\I2C.h</FilePath>
-            </File>
-            <File>
               <FileName>Timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Hard\Timer\Timer.c</FilePath>
@@ -470,6 +460,16 @@
               <FileName>Timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Source\Hard\Timer\Timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Hard\PWM\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Hard\PWM\PWM.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -497,14 +497,34 @@
           <GroupName>Components</GroupName>
           <Files>
             <File>
-              <FileName>VL53L0X.c</FileName>
+              <FileName>Memory.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Source\Components\VL53L0X\VL53L0X.c</FilePath>
+              <FilePath>..\Source\Components\Memory\Memory.c</FilePath>
+            </File>
+            <File>
+              <FileName>Memory.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Components\Memory\Memory.h</FilePath>
+            </File>
+            <File>
+              <FileName>EXTFlash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Components\EXTFlash\EXTFlash.c</FilePath>
+            </File>
+            <File>
+              <FileName>EXTFlash.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Components\EXTFlash\EXTFlash.h</FilePath>
             </File>
             <File>
               <FileName>VL53L0X.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Source\Components\VL53L0X\VL53L0X.h</FilePath>
+            </File>
+            <File>
+              <FileName>VL53L0X.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Components\VL53L0X\VL53L0X.c</FilePath>
             </File>
           </Files>
         </Group>

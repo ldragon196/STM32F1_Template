@@ -21,9 +21,6 @@
 #include "Hard/Event/Event.h"
 #include "Hard/WDG/WDG.h"
 
-#include "Components/VL53L0X/VL53L0X.h"
-
-
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
@@ -52,6 +49,7 @@ void mainProcessEventFunction(void);
 
 /******************************************************************************/
 
+
 /**
  * @func   MAIN_Init
  * @brief  Initializes main
@@ -71,8 +69,6 @@ static void MAIN_Init(void){
 	
 	EVENT_Init();
 	IWDG_Init();
-	
-	VL53L0X_Init();
 }
 
 /**
@@ -105,10 +101,9 @@ int main(void){
 void mainProcessEventFunction(void){
 	EVENT_SetInactive(mainProcessEventControl);
 	
-//	DEBUG_PRINTLN(".");
-	VL53L0X_Task();
 	
-	EVENT_SetDelayMS(mainProcessEventControl, 1000);
+	
+	EVENT_SetDelayMS(mainProcessEventControl, 100);
 }
 
 

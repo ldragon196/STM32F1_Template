@@ -1,13 +1,13 @@
 /*
- * I2C.h
+ * ADC.h
  *
- *  Created on: August 14, 2020
+ *  Created on: August 17, 2020
  *      Author: LongHD
  */
 /******************************************************************************/
 
-#ifndef _SOURCE_HARD_I2C_I2C_H_
-#define _SOURCE_HARD_I2C_I2C_H_
+#ifndef _SOURCE_HARD_ADC_ADC_H_
+#define _SOURCE_HARD_ADC_ADC_H_
 
 /******************************************************************************/
 /*                              INCLUDE FILES                                 */
@@ -15,39 +15,19 @@
 
 #include "Config.h"
 
-#if(I2C_ENABLED)
+#if(ADC_ENABLED)
 
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
-#define I2C_TOTAL_TIMEOUT                            3000
-#define I2C_DUMPY_BYTE                               0x00
+#define ADC1_EXAMPLE_CHANNEL                              ADC_Channel_0
+#define ADC1_EXAMPLE_PORT                                 ADC1_CHANNEL0_PORT
+#define ADC1_EXAMPLE_PIN                                  ADC1_CHANNEL0_PIN
 
-enum{
-	#if(I2C1_ENABLED)
-	I2C_ID_1,
-	#endif
-	
-	#if(I2C2_ENABLED)
-	I2C_ID_2,
-	#endif
-	
-	I2C_COUNT
-};
-
-typedef struct{
-	uint8_t Id;
-	I2C_TypeDef* I2C;
-} I2CBase_t;
-
-
-#define I2C_INSTANCE(num)                               \
-{                                                       \
-	.Id = CONCAT_2_(I2C_ID_, num),                      \
-	.I2C = CONCAT_2_(I2C, num)                          \
-}
-
+#define ADC2_EXAMPLE_CHANNEL                              ADC_Channel_1
+#define ADC2_EXAMPLE_PORT                                 ADC2_CHANNEL1_PORT
+#define ADC2_EXAMPLE_PIN                                  ADC2_CHANNEL1_PIN
 
 
 /******************************************************************************/
@@ -66,12 +46,19 @@ typedef struct{
 /*                                FUNCTIONS                                   */
 /******************************************************************************/
 
-void I2C_InitAsMaster(I2CBase_t* i2cConfig);
+#if(ADC1_ENABLED)
+void ADC1_Init(void);
+void ADC1_Deinit(void);
+uint16_t ADC1_GetConvertedValue(void);
+#endif
 
-void I2C_WriteData(I2CBase_t* i2cConfig, uint8_t slaveAdd, uint8_t *data, uint8_t size);
-void I2C_ReadData(I2CBase_t* i2cConfig, uint8_t slaveAdd, uint8_t *data, uint8_t size);
+#if(ADC2_ENABLED)
+void ADC2_Init(void);
+void ADC2_Deinit(void);
+uint16_t ADC2_GetConvertedValue(void);
+#endif
 
 /******************************************************************************/
 #endif
 
-#endif /* _SOURCE_HARD_I2C_I2C_H_ */
+#endif /* _SOURCE_HARD_ADC_ADC_H_ */

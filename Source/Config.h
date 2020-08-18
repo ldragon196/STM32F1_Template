@@ -349,7 +349,7 @@
 // <e> TIMER_ENABLED - Timer driver
 //==========================================================
 #ifndef TIMER_ENABLED
-#define TIMER_ENABLED 1
+#define TIMER_ENABLED 0
 #endif
 
 // <o> TIMER_IRQ_PRIORITY  - Timer interrupt priority
@@ -426,6 +426,16 @@
 
 // </e>
 
+
+// <e> PWM_ENABLED - PWM driver
+//==========================================================
+#ifndef PWM_ENABLED
+#define PWM_ENABLED 1
+#endif
+
+// </e>
+
+
 // <e> I2C_ENABLED - I2C driver
 //==========================================================
 #ifndef I2C_ENABLED
@@ -465,11 +475,80 @@
 
 // </e>
 
+// <e> SPI_ENABLED - SPI driver
+//==========================================================
+#ifndef SPI_ENABLED
+#define SPI_ENABLED 1
+#endif
+
+// <o> SPI_SLAVE_IRQ_PRIORITY  - SPI Slave receive IRQ priority
+
+// <0=> Highest	
+// <1=> High 
+// <2=> Medium 
+// <3=> Low	
+// <4=> Lowest 
+
+#ifndef SPI_SLAVE_IRQ_PRIORITY
+#define SPI_SLAVE_IRQ_PRIORITY 3
+#endif
+
+// <e> SPI1_ENABLED  - SPI instance 1
 
 
+#ifndef SPI1_ENABLED
+#define SPI1_ENABLED 1
+#endif
+
+// <q> SPI1_SLAVE_MODE_ENABLED  - SPI instance 1 enable slave mode
 
 
+#ifndef SPI1_SLAVE_MODE_ENABLED
+#define SPI1_SLAVE_MODE_ENABLED 1
+#endif
 
+// </e>
+
+// <e> SPI2_ENABLED  - SPI instance 2
+
+
+#ifndef SPI2_ENABLED
+#define SPI2_ENABLED 0
+#endif
+
+// <q> SPI2_SLAVE_MODE_ENABLED  - SPI instance 2 enable slave mode
+
+
+#ifndef SPI2_SLAVE_MODE_ENABLED
+#define SPI2_SLAVE_MODE_ENABLED 1
+#endif
+
+// </e>
+
+// </e>
+
+// <e> ADC_ENABLED - ADC driver
+//==========================================================
+#ifndef ADC_ENABLED
+#define ADC_ENABLED 1
+#endif
+
+
+// <q> ADC1_ENABLED  - ADC instance 1
+
+
+#ifndef ADC1_ENABLED
+#define ADC1_ENABLED 1
+#endif
+
+// <q> ADC2_ENABLED  - ADC instance 2
+
+
+#ifndef ADC2_ENABLED
+#define ADC2_ENABLED 1
+#endif
+
+// </e>
 
 
 
@@ -527,6 +606,24 @@
 
 // </e>
 
+// <e> EXT_FLASH_ENABLED - External flash driver
+//==========================================================
+#ifndef EXT_FLASH_ENABLED
+#define EXT_FLASH_ENABLED 0
+#endif
+
+// <o> EXT_FLASH_SPI_USE - SPI id used
+
+// <1=> SPI 1 
+// <2=> SPI 2 
+
+#ifndef EXT_FLASH_SPI_USE
+#define EXT_FLASH_SPI_USE 1
+#endif
+
+// </e>
+
+
 // <e> FIFO_ENABLED - Fifo - Fisrt in first out
 //==========================================================
 #ifndef FIFO_ENABLED
@@ -554,7 +651,7 @@
 // <e> VL53L0X_ENABLED - VL53L0X sensor enable
 
 #ifndef VL53L0X_ENABLED
-#define VL53L0X_ENABLED 1
+#define VL53L0X_ENABLED 0
 #endif
 
 // <q> VL53L0X_DEBUG_ENABLED - VL53L0X debug
@@ -570,7 +667,7 @@
 // <2=> I2C 2 
 
 #ifndef VL53L0X_I2C_USED
-#define VL53L0X_I2C_USED 2
+#define VL53L0X_I2C_USED 1
 #endif
 
 // <o> VL53L0X_TIME_MEASURE  - Time measure in ms

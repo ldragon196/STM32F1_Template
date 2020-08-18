@@ -1,7 +1,7 @@
 /*
- * ExtFlash.c
+ * EXTFlash.c
  *
- *  Created on: June 23, 2020
+ *  Created on: August 17, 2020
  *      Author: LongHD
  */
 /******************************************************************************/
@@ -10,24 +10,25 @@
 /*                              INCLUDE FILES                                 */
 /******************************************************************************/
 
-#include "Hard/SPI/SPI.h"
-#include "Hard/GPIO/GPIO.h"
 #include "ExtFlash.h"
 
 #if(EXT_FLASH_ENABLED)
+
+#include "Hard/SPI/SPI.h"
+#include "Hard/GPIO/GPIO.h"
 
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
-#define EXT_FLASH_TIMEOUT_MS                                   5000
-#define EXTFLASH_Transfer(a)                                   SPI_Transfer(EXT_FLASH_SPI, (a))
+#define EXT_FLASH_TIMEOUT                                      5000
+#define EXTFLASH_Transfer(a)                                   SPI_Transfer(&EXTFLash_SPI, (a))
 
 /******************************************************************************/
 /*                              PRIVATE DATA                                  */
 /******************************************************************************/
 
-
+SPIBase_t EXTFLash_SPI = SPI_INSTANCE(EXT_FLASH_SPI_USE);
 
 /******************************************************************************/
 /*                              EXPORTED DATA                                 */
@@ -112,7 +113,7 @@ static void EXTFLASH_Command(uint8_t cmd, uint32_t param){
 
 static void EXTFLASH_Poll(void){
 	uint8_t status;
-	uint32_t timeout = EXT_FLASH_TIMEOUT_MS;
+	uint32_t timeout = EXT_FLASH_TIMEOUT;
 	
 	EXTFLASH_Command(READ_STATUS, 0);
 	do {
@@ -224,10 +225,10 @@ uint32_t EXTFLASH_ReadManufactureID(void){
 
 boolean EXTFLASH_Init(void){
 	// Init SPI
-	SPI_InitAsMaster(EXT_FLASH_SPI);
+	SPI_InitAsMaster(&EXTFLash_SPI);
 	
 	// Set NSS Pin
-	GPIO_SetPinAsOutput(EXT_FLASH_NSS_PORT, EXT_FLASH_NSS_PIN);
+	GPIO_PinMode(EXT_FLASH_NSS_PORT, EXT_FLASH_NSS_PIN, GPIO_Mode_Out_PP);
 	EXTFLASH_Enable(FALSE);
 	
 	if(EXTFLASH_ReadManufactureID() == EXT_FLASH_DEVICE_ID){

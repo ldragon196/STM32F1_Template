@@ -56,12 +56,32 @@ static void I2C_Stop(I2CBase_t* i2cConfig);
 void I2C_InitAsMaster(I2CBase_t* i2cConfig){
 	I2C_InitTypeDef I2C_InitStructure;
 	
-	// Enable clock
-	RCC_APB1PeriphClockCmd(i2cConfig->RCCClock, ENABLE);
-	
-	// Config gpio as *open drain*
-	GPIO_PinMode(i2cConfig->SCLPort, i2cConfig->SCLPin, GPIO_Mode_AF_OD);
-	GPIO_PinMode(i2cConfig->SDAPort, i2cConfig->SDAPin, GPIO_Mode_AF_OD);
+	switch(i2cConfig->Id){
+		#if(I2C1_ENABLED)
+		case I2C_ID_1:
+			// Enable clock
+			RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+			
+			// Config gpio as *open drain*
+			GPIO_PinMode(I2C1_SCL_PORT, I2C1_SCL_PIN, GPIO_Mode_AF_OD);
+			GPIO_PinMode(I2C1_SDA_PORT, I2C1_SDA_PIN, GPIO_Mode_AF_OD);
+			break;
+		#endif
+		
+		#if(I2C2_ENABLED)
+		case I2C_ID_2:
+			// Enable clock
+			RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C2, ENABLE);
+			
+			// Config gpio
+			GPIO_PinMode(I2C2_SCL_PORT, I2C2_SCL_PIN, GPIO_Mode_AF_OD);
+			GPIO_PinMode(I2C2_SDA_PORT, I2C2_SDA_PIN, GPIO_Mode_AF_OD);
+			break;
+		#endif
+		
+		default:
+			return;
+	}
 	
 	// Config I2C
 	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;

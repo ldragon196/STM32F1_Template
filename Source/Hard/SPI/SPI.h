@@ -1,13 +1,13 @@
 /*
- * I2C.h
+ * SPI.h
  *
- *  Created on: August 14, 2020
+ *  Created on: August 17, 2020
  *      Author: LongHD
  */
 /******************************************************************************/
 
-#ifndef _SOURCE_HARD_I2C_I2C_H_
-#define _SOURCE_HARD_I2C_I2C_H_
+#ifndef _SOURCE_HARD_SPI_SPI_H_
+#define _SOURCE_HARD_SPI_SPI_H_
 
 /******************************************************************************/
 /*                              INCLUDE FILES                                 */
@@ -15,40 +15,41 @@
 
 #include "Config.h"
 
-#if(I2C_ENABLED)
+#if(SPI_ENABLED)
 
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
-#define I2C_TOTAL_TIMEOUT                            3000
-#define I2C_DUMPY_BYTE                               0x00
+#define SPI_DUMPY_BYTE                         0xFF
 
 enum{
-	#if(I2C1_ENABLED)
-	I2C_ID_1,
+	#if(SPI1_ENABLED)
+	SPI_ID_1,
 	#endif
 	
-	#if(I2C2_ENABLED)
-	I2C_ID_2,
+	#if(SPI2_ENABLED)
+	SPI_ID_2,
 	#endif
 	
-	I2C_COUNT
+	SPI_COUNT
 };
 
 typedef struct{
 	uint8_t Id;
-	I2C_TypeDef* I2C;
-} I2CBase_t;
+	SPI_TypeDef* SPI;
+} SPIBase_t;
 
-
-#define I2C_INSTANCE(num)                               \
-{                                                       \
-	.Id = CONCAT_2_(I2C_ID_, num),                      \
-	.I2C = CONCAT_2_(I2C, num)                          \
+#define SPI_INSTANCE(num)                      \
+{                                              \
+	.Id = CONCAT_2_(SPI_ID_, num),             \
+	.SPI = CONCAT_2_(SPI, num)                 \
 }
 
-
+// Use for slave mode
+#if(SPI1_SLAVE_MODE_ENABLED|SPI1_SLAVE_MODE_ENABLED)
+typedef void (*SPI_ReceiveHandler)(uint8_t, uint8_t);
+#endif
 
 /******************************************************************************/
 /*                              PRIVATE DATA                                  */
@@ -66,12 +67,15 @@ typedef struct{
 /*                                FUNCTIONS                                   */
 /******************************************************************************/
 
-void I2C_InitAsMaster(I2CBase_t* i2cConfig);
+void SPI_InitAsMaster(SPIBase_t* spiConfig);
+uint8_t SPI_Transfer(SPIBase_t* spi, uint8_t byte);
 
-void I2C_WriteData(I2CBase_t* i2cConfig, uint8_t slaveAdd, uint8_t *data, uint8_t size);
-void I2C_ReadData(I2CBase_t* i2cConfig, uint8_t slaveAdd, uint8_t *data, uint8_t size);
+#if(SPI1_ENABLED&SPI1_SLAVE_MODE_ENABLED)
+void SPI_InitAsSlave(SPIBase_t* spi, SPI_ReceiveHandler initFunc);
+void SPI_SlaveResponse(SPIBase_t* spi, uint8_t byte);
+#endif
 
 /******************************************************************************/
 #endif
 
-#endif /* _SOURCE_HARD_I2C_I2C_H_ */
+#endif /* _SOURCE_HARD_SPI_SPI_H_ */
