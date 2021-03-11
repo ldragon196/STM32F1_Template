@@ -461,16 +461,6 @@
               <FileType>5</FileType>
               <FilePath>..\Source\Hard\Timer\Timer.h</FilePath>
             </File>
-            <File>
-              <FileName>PWM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\Hard\PWM\PWM.c</FilePath>
-            </File>
-            <File>
-              <FileName>PWM.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Source\Hard\PWM\PWM.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
