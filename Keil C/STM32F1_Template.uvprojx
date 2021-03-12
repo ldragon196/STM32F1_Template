@@ -461,6 +461,16 @@
               <FileType>5</FileType>
               <FilePath>..\Source\Hard\Timer\Timer.h</FilePath>
             </File>
+            <File>
+              <FileName>SPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Hard\SPI\SPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Hard\SPI\SPI.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -515,6 +525,16 @@
               <FileName>VL53L0X.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Components\VL53L0X\VL53L0X.c</FilePath>
+            </File>
+            <File>
+              <FileName>RA02Lora.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Components\RA02Lora\RA02Lora.c</FilePath>
+            </File>
+            <File>
+              <FileName>RA02Lora.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Components\RA02Lora\RA02Lora.h</FilePath>
             </File>
           </Files>
         </Group>

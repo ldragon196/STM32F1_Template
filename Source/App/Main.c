@@ -3,6 +3,8 @@
  *
  *  Created on: August 12, 2020
  *      Author: LongHD
+ 
+ * Keil C 5: Debug -> Setting -> Pack -> Unchecked "Enable"
  */
  
 /******************************************************************************/
@@ -21,11 +23,14 @@
 #include "Hard/Event/Event.h"
 #include "Hard/WDG/WDG.h"
 
+#include "Components/RA02Lora/RA02Lora.h"
+
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
-
+#define LORA_TX MODE_TX_ENABLED
+#define LORA_RX (!LORA_TX)
 
 /******************************************************************************/
 /*                              PRIVATE DATA                                  */
@@ -69,6 +74,13 @@ static void MAIN_Init(void){
 	
 	EVENT_Init();
 	IWDG_Init();
+	
+	if(RA02LORA_Init()){
+		RA02LORA_SetFrequency(0x6C8000);      // 434MHZ
+	}
+	else{
+		DEBUG_PRINTLN("RA02 Lora initialized failure");
+	}
 }
 
 /**
@@ -86,6 +98,10 @@ int main(void){
 	EVENT_SetDelayMS(mainProcessEventControl, 1000);
 	
 	while(1){
+		#if LORA_RX
+		RA02LORA_Task();
+		#endif
+		
 		EVENT_Task();
 		IWDG_ResetWatchdog();
 	}
@@ -101,9 +117,20 @@ int main(void){
 void mainProcessEventFunction(void){
 	EVENT_SetInactive(mainProcessEventControl);
 	
+	#if LORA_TX
+	char data[] = "LongHD";
+	RA02LORA_SendData((uint8_t*) data, strlen(data));
 	
+	#elif LORA_RX
+		uint8_t read;
+		while(RA02LORA_Read(&read)){
+			DEBUG_PRINT("%02X ", read);
+		}
+	#endif
 	
-	EVENT_SetDelayMS(mainProcessEventControl, 100);
+	DEBUG_PRINTLN("Mode %d", Lora_ReadRegister(REG_OP_MODE));
+	
+	EVENT_SetDelayMS(mainProcessEventControl, 3000);
 }
 
 

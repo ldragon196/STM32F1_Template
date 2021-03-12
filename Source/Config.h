@@ -196,7 +196,7 @@
 // <e> EXTINT_ENABLED - External interrupt
 //==========================================================
 #ifndef EXTINT_ENABLED
-#define EXTINT_ENABLED 1
+#define EXTINT_ENABLED 0
 #endif
 
 // <o> EXTINT_PRIORITY  - External interrupt priority
@@ -430,7 +430,7 @@
 // <e> PWM_ENABLED - PWM driver
 //==========================================================
 #ifndef PWM_ENABLED
-#define PWM_ENABLED 1
+#define PWM_ENABLED 0
 #endif
 
 // </e>
@@ -439,7 +439,7 @@
 // <e> I2C_ENABLED - I2C driver
 //==========================================================
 #ifndef I2C_ENABLED
-#define I2C_ENABLED 1
+#define I2C_ENABLED 0
 #endif
 
 // <o> I2C_CLOCK_SPEED  - I2C clock speed
@@ -504,7 +504,7 @@
 
 
 #ifndef SPI1_SLAVE_MODE_ENABLED
-#define SPI1_SLAVE_MODE_ENABLED 1
+#define SPI1_SLAVE_MODE_ENABLED 0
 #endif
 
 // </e>
@@ -530,7 +530,7 @@
 // <e> ADC_ENABLED - ADC driver
 //==========================================================
 #ifndef ADC_ENABLED
-#define ADC_ENABLED 1
+#define ADC_ENABLED 0
 #endif
 
 
@@ -679,6 +679,36 @@
 
 
 // </e>
+
+// <e> RA02_LORA_ENABLED - RA02 Lora module enable
+
+#ifndef RA02_LORA_ENABLED
+#define RA02_LORA_ENABLED 1
+#endif
+
+// <q> RA02_LORA_DEBUG_ENABLED - RA02 Lora module debug
+
+
+#ifndef RA02_LORA_DEBUG_ENABLED
+#define RA02_LORA_DEBUG_ENABLED 1
+#endif
+
+// <o> RA02_LORA_SPI_USED  - SPI used
+
+// <1=> SPI 1  
+// <2=> SPI 2 
+
+#ifndef RA02_LORA_SPI_USED
+#define RA02_LORA_SPI_USED 1
+#endif
+
+#define RA02_LORA_NSS_PORT         COM_SPI1_NSS_PORT
+#define RA02_LORA_NSS_PIN          COM_SPI1_NSS_PIN
+#define RA02_LORA_RESET_PORT       GPIO_PORTA
+#define RA02_LORA_RESET_PIN        8
+
+// </e>
+
 
 // </h> 
 
