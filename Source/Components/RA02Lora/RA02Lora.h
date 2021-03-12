@@ -96,11 +96,14 @@
 #define IRQ_CRC_ERROR_MASK       0x20
 #define IRQ_RX_DONE_MASK         0x40
 
-
-
-
-
 #define RA02_LORA_VERSION        0x12
+
+
+/* In continuous RX mode, opposite to the single RX mode, the RxTimeout interrupt will never occur
+ * and the device will never go in Standby mode automatically.
+ */
+#define RX_SINGLE_MODE           1
+#define RX_CONTINUOUS_MODE       (!RX_SINGLE_MODE)
 
 /******************************************************************************/
 /*                              PRIVATE DATA                                  */

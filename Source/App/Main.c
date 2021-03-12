@@ -29,7 +29,7 @@
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
-#define LORA_TX MODE_TX_ENABLED
+#define LORA_TX 0
 #define LORA_RX (!LORA_TX)
 
 /******************************************************************************/
@@ -53,7 +53,6 @@ static void MAIN_Init(void);
 void mainProcessEventFunction(void);
 
 /******************************************************************************/
-
 
 /**
  * @func   MAIN_Init
@@ -128,9 +127,7 @@ void mainProcessEventFunction(void){
 		}
 	#endif
 	
-	DEBUG_PRINTLN("Mode %d", Lora_ReadRegister(REG_OP_MODE));
-	
-	EVENT_SetDelayMS(mainProcessEventControl, 3000);
+	EVENT_SetDelayMS(mainProcessEventControl, 5000);
 }
 
 

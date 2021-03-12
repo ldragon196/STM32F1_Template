@@ -364,10 +364,13 @@ uint8_t RA02LORA_ParsePacket(void){
 		// Set FIFO address to current RX address
 		Lora_WriteRegister(REG_FIFO_ADDR_PTR, Lora_ReadRegister(REG_FIFO_RX_CURRENT_ADDR));
 		
-		// Idle
-		RA02LORA_SetMode(MODE_RX_SINGLE);
+		#if RX_SINGLE_MODE
+		RA02LORA_SetMode(MODE_STDBY);
+		#endif
 	}
+	
 	// Set mode Rx
+	#if RX_SINGLE_MODE
 	else if(Lora_ReadRegister(REG_OP_MODE) != (MODE_LONG_RANGE_MODE | MODE_RX_SINGLE)){
 		// Reset FIFO address
 		Lora_WriteRegister(REG_FIFO_ADDR_PTR, 0);
@@ -375,6 +378,17 @@ uint8_t RA02LORA_ParsePacket(void){
 		// Put in single RX mode
 		RA02LORA_SetMode(MODE_RX_SINGLE);
 	}
+	#elif RX_CONTINUOUS_MODE
+	
+	else if(Lora_ReadRegister(REG_OP_MODE) != (MODE_LONG_RANGE_MODE | MODE_RX_CONTINUOS)){
+		// Reset FIFO address
+		Lora_WriteRegister(REG_FIFO_ADDR_PTR, 0);
+		
+		// Put in single RX mode
+		RA02LORA_SetMode(MODE_RX_CONTINUOS);
+	}
+	#endif
+	
 	return length;
 }
 
