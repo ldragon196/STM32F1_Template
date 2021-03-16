@@ -105,6 +105,12 @@
 #define RX_SINGLE_MODE           1
 #define RX_CONTINUOUS_MODE       (!RX_SINGLE_MODE)
 
+#define EXPLICIT_HEADER_MODE     0
+#define IMPLICIT_HEADER_MODE     1
+
+#define RFO_MODE                 0
+#define PA_BOOST_MODE            1
+
 /******************************************************************************/
 /*                              PRIVATE DATA                                  */
 /******************************************************************************/
@@ -124,8 +130,12 @@
 boolean RA02LORA_Init(void);
 void RA02LORA_Task(void);
 void RA02LORA_Reset(void);
+
 boolean RA02LORA_Read(uint8_t* byte);
 uint16_t RA02LORA_Available(void);
+
+boolean RA02LORA_IsTransmitting(void);
+void RA02LORA_SendData(uint8_t* data, uint8_t size);
 
 /***************************************************/
 
@@ -142,16 +152,21 @@ uint8_t RA02LORA_GetMode(void);
 void RA02LORA_SetMode(uint8_t mode);
 
 void RA02LORA_EnableCRC(void);
+void RA02LORA_DisableCRC(void);
 void RA02LORA_EnableLNABoostHF(void);
+void RA02LORA_SetSyncWord(uint8_t sw);
 
-boolean RA02LORA_IsTransmitting(void);
-void RA02LORA_SendData(uint8_t* data, uint8_t size);
+void RA02LORA_SetLdoFlag(void);
+void RA02LORA_SetCodingRate(uint8_t denominator);
 
-uint8_t RA02LORA_ParsePacket(void);
-boolean RA02LORA_ReadRxData(uint8_t* data);
+uint8_t RA02LORA_GetHeaderMode(void);
+void RA02LORA_SetHeaderMode(uint8_t mode);
 
-uint8_t Lora_ReadRegister(uint8_t address);
-void Lora_WriteRegister(uint8_t address, uint8_t value);
+uint32_t RA02LORA_GetSignalBandwidth(void);
+void RA02LORA_SetSignalBandwidth(uint32_t sbw);
+
+uint8_t RA02LORA_GetSpreadingFactor(void);
+void RA02LORA_SetSpreadingFactor(uint8_t sf);
 
 /******************************************************************************/
 

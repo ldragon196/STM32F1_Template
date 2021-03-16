@@ -75,7 +75,7 @@ static void MAIN_Init(void){
 	IWDG_Init();
 	
 	if(RA02LORA_Init()){
-		RA02LORA_SetFrequency(0x6C8000);      // 434MHZ
+		RA02LORA_SetFrequency(434000000);      // 434MHZ
 	}
 	else{
 		DEBUG_PRINTLN("RA02 Lora initialized failure");
@@ -127,7 +127,7 @@ void mainProcessEventFunction(void){
 		}
 	#endif
 	
-	EVENT_SetDelayMS(mainProcessEventControl, 5000);
+	EVENT_SetDelayMS(mainProcessEventControl, 1000);
 }
 
 

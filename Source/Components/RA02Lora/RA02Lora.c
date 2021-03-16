@@ -49,7 +49,11 @@ SPIBase_t loraSPI = SPI_INSTANCE(RA02_LORA_SPI_USED);
 /*                                FUNCTIONS                                   */
 /******************************************************************************/
 
+static uint8_t Lora_ReadRegister(uint8_t address);
+static void Lora_WriteRegister(uint8_t address, uint8_t value);
 
+uint8_t RA02LORA_ParsePacket(uint8_t size);
+boolean RA02LORA_ReadRxData(uint8_t* data);
 
 /******************************************************************************/
 
@@ -63,7 +67,7 @@ SPIBase_t loraSPI = SPI_INSTANCE(RA02_LORA_SPI_USED);
  * @retval Register value
  */
  
-uint8_t Lora_ReadRegister(uint8_t address){
+static uint8_t Lora_ReadRegister(uint8_t address){
 	LORA_ENABLE();
 	SPI_Transfer(&loraSPI, address & 0x7F);
 	uint8_t retVal = SPI_Transfer(&loraSPI, SPI_DUMPY_BYTE);
@@ -78,7 +82,7 @@ uint8_t Lora_ReadRegister(uint8_t address){
  * @retval None
  */
 
-void Lora_WriteRegister(uint8_t address, uint8_t value){
+static void Lora_WriteRegister(uint8_t address, uint8_t value){
 	LORA_ENABLE();
 	SPI_Transfer(&loraSPI, address | 0x80);
 	SPI_Transfer(&loraSPI, value);
@@ -120,13 +124,15 @@ void RA02LORA_Reset(void){
  */
 
 uint32_t RA02LORA_GetFrequency(void){
+	uint64_t frequency;
 	uint32_t retVal = 0;
 	
 	retVal = Lora_ReadRegister(REG_FRF_MSB) << 16;
 	retVal |= Lora_ReadRegister(REG_FRF_MID) << 8;
 	retVal |= Lora_ReadRegister(REG_FRF_LSB);
 	
-	return retVal;
+	frequency = ((uint64_t) retVal * 32000000) >> 19;
+	return (uint32_t) frequency;
 }
 
 /**
@@ -136,9 +142,11 @@ uint32_t RA02LORA_GetFrequency(void){
  */
 
 void RA02LORA_SetFrequency(uint32_t frequency){
-	Lora_WriteRegister(REG_FRF_MSB, (frequency >> 16) & 0xFF);
-	Lora_WriteRegister(REG_FRF_MID, (frequency >> 8) & 0xFF);
-	Lora_WriteRegister(REG_FRF_LSB, frequency & 0xFF);
+	uint64_t setValue = ((uint64_t) frequency << 19) / 32000000;
+	
+	Lora_WriteRegister(REG_FRF_MSB, (setValue >> 16) & 0xFF);
+	Lora_WriteRegister(REG_FRF_MID, (setValue >> 8) & 0xFF);
+	Lora_WriteRegister(REG_FRF_LSB, setValue & 0xFF);
 }
 
 /**************** TX Power ****************/
@@ -186,7 +194,7 @@ uint8_t RA02LORA_GetTxPower(void){
 
 void RA02LORA_SetTxPower(uint8_t mode, uint8_t power){
 	// RFO
-	if(mode == 0){
+	if(mode == RFO_MODE){
 		// Set Pmax = 15 (bit 6-4), value = 15 - (Pmax - Pout)
 		power = power & 0x0F;  // 4 bits 3-0
 		power |= 0x70;         // 3 bits 6-4 -> Pmax = 10.8 + 0.6 * 7 = 15
@@ -254,7 +262,7 @@ void RA02LORA_SetMode(uint8_t mode){
 /**************** CONFIG ****************/
 
 /**
- * @brief  Enable CRC check
+ * @brief  Enable/ Disable CRC check
  *         RegModemConfig2 RxPayloadCrcOn: Enable CRC generation and check on payload
  *                                         0 -> CRC disable
  *                                         1 -> CRC enable
@@ -264,15 +272,16 @@ void RA02LORA_SetMode(uint8_t mode){
  */
 
 void RA02LORA_EnableCRC(void){
-	// Set Explicit header mode (bit 0 = 0)
-	Lora_WriteRegister(REG_MODEM_CONFIG_1, Lora_ReadRegister(REG_MODEM_CONFIG_1) & 0xfe);
-	// Enable CRC on Tx and Rx side
 	Lora_WriteRegister(REG_MODEM_CONFIG_2, Lora_ReadRegister(REG_MODEM_CONFIG_2) | 0x04);
+}
+
+void RA02LORA_DisableCRC(void){
+	Lora_WriteRegister(REG_MODEM_CONFIG_2, Lora_ReadRegister(REG_MODEM_CONFIG_2) & 0xFB);
 }
 
 /**
  * @brief  Config LNA
-*         RegLna: LnaBoostHf: 00 -> Default LNA current
+ *         RegLna: LnaBoostHf: 00 -> Default LNA current
  *                            11 -> Boost on, 150% LNA current
  *
  *         RegModemConfig: AgcAutoOn  0 -> LNA gain set by register LnaGain (Default)
@@ -284,6 +293,195 @@ void RA02LORA_EnableCRC(void){
 void RA02LORA_EnableLNABoostHF(void){
 	Lora_WriteRegister(REG_LNA, Lora_ReadRegister(REG_LNA) | 0x03);
 	Lora_WriteRegister(REG_MODEM_CONFIG_3, LNA_BY_INTERNAL_AGC);
+}
+
+/**************** LDO ****************/
+
+/**
+ * @brief  Set Low Data Rate Optimize
+ *         RegModemConfig 3: Bit 3: 0 -> Disable
+ *                                  1 ->  Enabled; mandated for when the symbol length exceeds 16ms
+ * @param  None
+ * @retval Mode
+ */
+
+void RA02LORA_SetLdoFlag(void){
+	// Section 4.1.1.5
+	uint32_t symbolDuration = 1000 / ( RA02LORA_GetSignalBandwidth() / (1L << RA02LORA_GetSpreadingFactor()) );
+	
+	// Section 4.1.1.6
+	uint8_t ldoOn = (symbolDuration > 16) ? 1 : 0;
+	uint8_t config3 = Lora_ReadRegister(REG_MODEM_CONFIG_3);
+	
+	// Write bit 3
+	config3 = (config3 & 0xFB) | ((ldoOn << 3) & 0x04);
+	Lora_WriteRegister(REG_MODEM_CONFIG_3, config3);
+}
+
+/**************** CODING RATE ****************/
+
+/**
+ * @brief  Set Coding Rate
+ *         RegModemConfig 1: Bit 3-1
+ *         See 4.1.1.3
+ * @param  Value range [5,8] ( coding rate 4/5, 4/6, 4/7, 4/8)
+ * @retval Mode
+ */
+
+void RA02LORA_SetCodingRate(uint8_t denominator){
+	if (denominator < 5) {
+		denominator = 5;
+	}
+	else if (denominator > 8) {
+		denominator = 8;
+	}
+
+	uint8_t cr = denominator - 4;
+	Lora_WriteRegister(REG_MODEM_CONFIG_1, (Lora_ReadRegister(REG_MODEM_CONFIG_1) & 0xF1) | (cr << 1));
+}
+
+
+/**************** BANDWIDTH ****************/
+
+/**
+ * @brief  Get signal bandwidth
+ *         Bit 7 - 4 -> 7.8 kHz - 500 kHz (Default 125 kHz)
+ *         In the lower band (169MHz), signal bandwidths 8&9 are not supported
+ * @param  None
+ * @retval Signal bandwidth
+ */
+
+uint32_t RA02LORA_GetSignalBandwidth(void){
+	uint8_t bw = (Lora_ReadRegister(REG_MODEM_CONFIG_1) >> 4);
+	switch (bw) {
+		case 0: return 7.8E3;
+		case 1: return 10.4E3;
+		case 2: return 15.6E3;
+		case 3: return 20.8E3;
+		case 4: return 31.25E3;
+		case 5: return 41.7E3;
+		case 6: return 62.5E3;
+		case 7: return 125E3;
+		case 8: return 250E3;
+		case 9: return 500E3;
+	}
+	return 0;
+}
+
+/**
+ * @brief  Set signal bandwidth
+ * @param  Signal bandwidth
+ * @retval None
+ */
+
+void RA02LORA_SetSignalBandwidth(uint32_t sbw){
+	uint8_t bw;
+
+	if (sbw <= 7.8E3) {
+		bw = 0;
+	} else if (sbw <= 10.4E3) {
+		bw = 1;
+	} else if (sbw <= 15.6E3) {
+		bw = 2;
+	} else if (sbw <= 20.8E3) {
+		bw = 3;
+	} else if (sbw <= 31.25E3) {
+		bw = 4;
+	} else if (sbw <= 41.7E3) {
+		bw = 5;
+	} else if (sbw <= 62.5E3) {
+		bw = 6;
+	} else if (sbw <= 125E3) {
+		bw = 7;
+	} else if (sbw <= 250E3) {
+		bw = 8;
+	} else /*if (sbw <= 250E3)*/ {
+		bw = 9;
+	}
+	
+	// Bits 7-4
+	Lora_WriteRegister(REG_MODEM_CONFIG_1, (Lora_ReadRegister(REG_MODEM_CONFIG_1) & 0x0F) | (bw << 4));
+	RA02LORA_SetLdoFlag();
+}
+
+/**************** SPREADING FACTOR ****************/
+
+/**
+ * @brief  Get spreading factor (Bits 7-4, RegModemConfig)
+ * @param  None
+ * @retval Spreading factor
+ */
+
+uint8_t RA02LORA_GetSpreadingFactor(void){
+	return Lora_ReadRegister(REG_MODEM_CONFIG_2) >> 4;
+}
+
+/**
+ * @brief  Set spreading factor
+ *         RegModemConfig 2: SpreadingFactor: SF rate (expressed as a base-2 logarithm)
+ * @param  SF from 6 to 12
+ * @retval Mode
+ */
+
+void RA02LORA_SetSpreadingFactor(uint8_t sf){
+	// Range [6, 12]
+	if(sf < 6){
+		sf = 6;
+	}
+	else if (sf > 12){
+		sf = 12;
+	}
+	
+	/* RegDetectOptimize: 0xC0 | 0x03 -> SF7 to SF12
+	 *                           0x05 -> SF6
+	 * RegDetectionThreshold: 0x0A -> SF7 to SF12
+	 *                        0x0C -> SF6
+	 */
+	
+	if(sf == 6){
+		Lora_WriteRegister(REG_DETECTION_OPTIMIZE, 0xC5);
+		Lora_WriteRegister(REG_DETECTION_THRESHOLD, 0x0C);
+	}
+	else{
+		Lora_WriteRegister(REG_DETECTION_OPTIMIZE, 0xC3);
+		Lora_WriteRegister(REG_DETECTION_THRESHOLD, 0x0A);
+	}
+	
+	// Bits 7-4
+	Lora_WriteRegister(REG_MODEM_CONFIG_2, (Lora_ReadRegister(REG_MODEM_CONFIG_2) & 0x0F) | ((sf << 4) & 0xF0));
+	RA02LORA_SetLdoFlag();
+}
+
+/**************** MODE ****************/
+
+/**
+ * @brief  Set/ Get header mode
+ *         RegModemConfig 1: ImplicitHeaderModeOn: Bit 0: 0 -> Explicit Header mode
+ *                                                        1 -> Implicit Header mode
+ * @param  None
+ * @retval None
+ */
+
+uint8_t RA02LORA_GetHeaderMode(void){
+	return Lora_ReadRegister(REG_MODEM_CONFIG_1) & 0x01;
+}
+
+void RA02LORA_SetHeaderMode(uint8_t mode){
+	uint8_t set = mode | (Lora_ReadRegister(REG_MODEM_CONFIG_1) & 0xFE);
+	
+	Lora_WriteRegister(REG_MODEM_CONFIG_1, set);
+}
+
+/**************** SYNCWORD ****************/
+
+/**
+ * @brief  Set Lora sync word
+ * @param  Sync word (Default 0x12)
+ * @retval None
+ */
+
+void RA02LORA_SetSyncWord(uint8_t sw){
+	Lora_WriteRegister(REG_SYNC_WORD, sw);
 }
 
 /**************** TRANSMIT ****************/
@@ -345,21 +543,36 @@ uint8_t packetIndex = 0;
 
 /**
  * @brief  Parse data receive (must implement in a loop)
- * @param  None
+ * @param  Packet size, if > 0 -> implicit header mode
  * @retval Packet size
  */
 
-uint8_t RA02LORA_ParsePacket(void){
+uint8_t RA02LORA_ParsePacket(uint8_t size){
 	uint8_t irqFlag = Lora_ReadRegister(REG_IRQ_FLAGS);
 	uint8_t length = 0;
 	
+	// Config mode
+	if(size > 0){
+		RA02LORA_SetHeaderMode(IMPLICIT_HEADER_MODE);
+		Lora_WriteRegister(REG_PAYLOAD_LENGTH, size & 0xFF);
+	}
+	else{
+		RA02LORA_SetHeaderMode(EXPLICIT_HEADER_MODE);
+	}
+	
 	// Clear IRQ
 	Lora_WriteRegister(REG_IRQ_FLAGS, irqFlag);
-	Lora_WriteRegister(REG_MODEM_CONFIG_1, Lora_ReadRegister(REG_MODEM_CONFIG_1) & 0xfe);
 	
 	if((irqFlag & IRQ_RX_DONE_MASK) && ((irqFlag & IRQ_CRC_ERROR_MASK) == 0)){
 		packetIndex = 0;
-		length = Lora_ReadRegister(REG_RX_NB_BYTES);
+		
+		// Read packet length
+		if(RA02LORA_GetHeaderMode() == IMPLICIT_HEADER_MODE){
+			length = Lora_ReadRegister(REG_PAYLOAD_LENGTH);
+		}
+		else{
+			length = Lora_ReadRegister(REG_RX_NB_BYTES);
+		}
 		
 		// Set FIFO address to current RX address
 		Lora_WriteRegister(REG_FIFO_ADDR_PTR, Lora_ReadRegister(REG_FIFO_RX_CURRENT_ADDR));
@@ -407,9 +620,6 @@ boolean RA02LORA_ReadRxData(uint8_t* data){
 	return FALSE;
 }
 
-
-
-
 /******************************************************************************/
 
 #define LORA_FIFO_SIZE 1024
@@ -454,8 +664,14 @@ boolean RA02LORA_Init(void){
 	
 	// High Frequency (RFI_HF) LNA current adjustment
 	RA02LORA_EnableLNABoostHF();
-	RA02LORA_SetTxPower(1, TX_POWER_SET);   // Set Tx power in PA_BOOST mode
+	RA02LORA_SetTxPower(PA_BOOST_MODE, TX_POWER_SET);   // Set Tx power in PA_BOOST mode
 	RA02LORA_EnableCRC();
+	
+	// Spreading factor
+	RA02LORA_SetSpreadingFactor(9);
+	
+	// Sync word
+	RA02LORA_SetSyncWord(0x12);
 	
 	// Back to standby mode
 	RA02LORA_SetMode(MODE_STDBY);
@@ -466,6 +682,7 @@ boolean RA02LORA_Init(void){
 
 /**
  * @brief  Task for receive data
+ *         Run in explicit mode
  * @param  None
  * @retval None
  */
@@ -473,7 +690,7 @@ boolean RA02LORA_Init(void){
 void RA02LORA_Task(void){
 	uint8_t read;
 	
-	if(RA02LORA_ParsePacket() > 0){
+	if(RA02LORA_ParsePacket(0) > 0){
 		while(RA02LORA_ReadRxData(&read)){
 			/* Push data to buffer */
 			if(LoraFifo.count < LORA_FIFO_SIZE){
