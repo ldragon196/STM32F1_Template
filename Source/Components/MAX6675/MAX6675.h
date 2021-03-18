@@ -1,29 +1,38 @@
 /*
- *  Board.c
+ * MAX6675.h
  *
- *  Created on: August 12, 2020
+ *  Created on: March 18, 2021
  *      Author: LongHD
  */
 
 /******************************************************************************/
 
+#ifndef _SOURCE_MAX6675_MAX6675_H_
+#define _SOURCE_MAX6675_MAX6675_H_
+
 /******************************************************************************/
 /*                              INCLUDE FILES                                 */
 /******************************************************************************/
 
-#include "Board.h"
+#include "Config.h"
+
+#if MAX6675_ENABLED
 
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
+#define MAX6675_ENABLE()            GPIO_PinLow(MAX6675_CS_PORT, MAX6675_CS_PIN)
+#define MAX6675_DISABLE()           GPIO_PinHigh(MAX6675_CS_PORT, MAX6675_CS_PIN)
+
+#define MAX6675_PULSE_US            20
 
 
 /******************************************************************************/
 /*                              PRIVATE DATA                                  */
 /******************************************************************************/
 
-static volatile uint8_t IrqNestLevel = 0;
+
 
 /******************************************************************************/
 /*                              EXPORTED DATA                                 */
@@ -35,41 +44,10 @@ static volatile uint8_t IrqNestLevel = 0;
 /*                                FUNCTIONS                                   */
 /******************************************************************************/
 
-
+void MAX6675_Init(void);
+float MAX6675_ReadCelsius(void);
 
 /******************************************************************************/
+#endif
 
-/**
- * @brief  Delay time us
- * @param  us: microsecond
- * @retval None
- */
-void delay_us( uint32_t us){
-    uint32_t i;
-    uint32_t fms = (SystemCoreClock / 4000000) * us ;
-    for (i = 0; i < fms; i++){}
-}
-
-/**
- * @brief  Disable all interrupt
- * @param  None
- * @retval None
- */
-void _enter_critical(void){
-    __disable_irq();
-    IrqNestLevel++;  
-}
-
-/**
- * @brief  Enable all interrupt
- * @param  None
- * @retval None
- */
-void _exit_critical(void){
-    IrqNestLevel--;
-    if ( IrqNestLevel == 0 ) {
-        __enable_irq();
-    }   
-}
-
-
+#endif /* _SOURCE_MAX6675_MAX6675_H_ */

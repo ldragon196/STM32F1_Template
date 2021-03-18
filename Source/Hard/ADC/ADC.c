@@ -54,7 +54,6 @@ static volatile uint16_t ADC2ConvertedValue = 0;
 #if(ADC1_ENABLED)
 
 /**
- * @func   ADC1_Init
  * @brief  Init adc1, use DMA
  *         See STM32F1 Manual Reference: DMA request mapping
  *         ADC1 -> DMA1 Channel 1, ADC3 -> DMA2 Channel 5
@@ -131,7 +130,6 @@ void ADC1_Init(void){
 }
 
 /**
- * @func   ADC1_Deinit
  * @brief  Deinit ADC1
  * @param  None
  * @retval None
@@ -143,7 +141,6 @@ void ADC1_Deinit(void){
 }
 
 /**
- * @func   ADC1_GetMeasureValue
  * @brief  Get ADC1 converted value
  * @param  None
  * @retval None
@@ -160,7 +157,6 @@ uint16_t ADC1_GetConvertedValue(void){
 #if(ADC2_ENABLED)
 
 /**
- * @func   ADC2_Init
  * @brief  Init adc2 (not use DMA)
  * @param  None
  * @retval None
@@ -222,7 +218,6 @@ void ADC2_Init(void){
 }
 
 /**
- * @func   ADC1_2_IRQHandler
  * @brief  This function handles ADC1 and ADC2 global interrupts requests
  * @param  None
  * @retval None
@@ -234,7 +229,6 @@ void ADC1_2_IRQHandler(void){
 }
 
 /**
- * @func   ADC2_Deinit
  * @brief  Deinit ADC2
  * @param  None
  * @retval None
@@ -246,7 +240,6 @@ void ADC2_Deinit(void){
 }
 
 /**
- * @func   ADC2_GetConvertedValue
  * @brief  Get ADC2 converted value
  * @param  None
  * @retval None

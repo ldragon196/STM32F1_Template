@@ -1,5 +1,5 @@
 /*
- * RA02Lora.h
+ * RA02Lora.c
  *
  *  Created on: March 11, 2021
  *      Author: LongHD\

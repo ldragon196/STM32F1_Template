@@ -43,7 +43,6 @@
 /******************************************************************************/
 
 /**
- * @func   IWDG_Init
  * @brief  Initialized independent watchdog
  * @param  None
  * @retval None
@@ -64,7 +63,6 @@ void IWDG_Init(void){
 }
 
 /**
- * @func   IWDG_ResetWatchdog
  * @brief  Reset watchdog
  * @param  None
  * @retval None

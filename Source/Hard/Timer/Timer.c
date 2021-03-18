@@ -48,7 +48,6 @@ static TimerIRQHandler TimerHandler[TIMER_MAX] = {0};
 /******************************************************************************/
 
 /**
- * @func   TIMER_Init
  * @brief  Init timer
  * @param  Timer and parameters
  * @retval None
@@ -94,7 +93,6 @@ void TIMER_Init(TimerBase_t* timer, TimerConfig_t* config){
 }
 
 /**
- * @func   TIMER_GetCounter
  * @brief  Get timer counter
  * @param  TimerBase_t
  * @retval Timer counter

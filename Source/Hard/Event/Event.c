@@ -66,7 +66,6 @@ static uint8_t EVENT_IsExpiredTime(uint8_t eventID);
 
 #if(EVENT_TIMER_USED==0)
 /**
- * @func   SysTick_Handler
  * @brief  System tick handler
  * @param  None
  * @retval None
@@ -78,7 +77,6 @@ void SysTick_Handler(void){
 #endif
 
 /**
- * @func   EVENT_Init
  * @brief  Initialized event control
  * @param  None
  * @retval None
@@ -107,7 +105,6 @@ void EVENT_Init(void){
 }
 
 /**
- * @func   EVENT_Creat
  * @brief  Register event to schedule
  * @param  eventId output to store event id
  *         callbackFunc function handler when event excute
@@ -133,7 +130,6 @@ EventResult EVENT_Creat(EventControl *eventId, EventFunction callbackFunc){
 }
 
 /**
- * @func   EVENT_SetActive
  * @brief  Active event now
  * @param  eventId
  * @retval None
@@ -148,7 +144,6 @@ void EVENT_SetActive(EventControl eventId){
 }
 
 /**
- * @func   EVENT_SetInactive
  * @brief  Inactive event now
  * @param  eventId
  * @retval None
@@ -161,7 +156,6 @@ void EVENT_SetInactive(EventControl eventId){
 }
 
 /**
- * @func   EVENT_SetDelayMS
  * @brief  Schedule active timer after delay ms
  * @param  eventControl
  *         delay time
@@ -177,7 +171,6 @@ void EVENT_SetDelayMS(EventControl eventId, uint32_t delay){
 }
 
 /**
- * @func   EVENT_GetTimeRemain
  * @brief  Get time remaining before event is excuted
  * @param  Event index
  * @retval Time remaining
@@ -203,7 +196,6 @@ uint32_t EVENT_GetTimeRemain(EventControl eventId){
 
 
 /**
- * @func   EVENT_Task
  * @brief  Task to schedule event
  * @param  None
  * @retval None
@@ -221,7 +213,6 @@ void EVENT_Task(void){
 }
 
 /**
- * @func   EVENT_IsExpiredTime
  * @brief  Check time expired of event
  * @param  Event id to check
  * @retval true if time is expired
@@ -241,7 +232,6 @@ static uint8_t EVENT_IsExpiredTime(uint8_t eventID){
 }
 
 /**
- * @func   EVENT_GetCurrentTickMs
  * @brief  Get milliSecondSystemTick
  * @param  None
  * @retval milliSecondSystemTick

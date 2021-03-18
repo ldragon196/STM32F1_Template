@@ -44,6 +44,12 @@ static void UART_HandlerIRQ(uint8_t uartNum);
 
 /******************************************************************************/
 
+/**
+ * @brief    :  Uart initialization
+ * @parameter:  Uart number is used
+ * @retVal   :  None
+ */
+
 void UART_Init(uint8_t uartNum){
     USART_InitTypeDef USART_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -147,7 +153,6 @@ void UART_Init(uint8_t uartNum){
 }
 
 /**
- * @func   USARTx_IRQHandler
  * @brief  Handle uart irq
  * @param  None
  * @retval None
@@ -171,7 +176,6 @@ void USART3_IRQHandler(void){
 }
 #endif
 
-
 static void UART_HandlerIRQ(uint8_t uartNum){
 	if (USART_GetITStatus(COM_UART_BASE[uartNum], USART_IT_RXNE) != RESET){
 		if(UART_RxBuffer[uartNum].count < UART_DEFAULT_CONFIG_RX_FIFO_SIZE){
@@ -187,7 +191,6 @@ static void UART_HandlerIRQ(uint8_t uartNum){
 /******************************************************************************/
 
 /**
- * @function :  UART_WriteByte
  * @brief    :  Write byte via usart com
  * @parameter:  Byte
  * @retVal   :  None
@@ -199,7 +202,6 @@ void UART_WriteByte(uint8_t uartNum, uint8_t byte){
 }
 
 /**
- * @function :  UART_WriteData
  * @brief    :  Write data via usart com
  * @parameter:  data
  *              length: length of data
@@ -214,7 +216,6 @@ void UART_WriteData(uint8_t uartNum, const uint8_t* data, uint16_t length){
 }
 
 /**
- * @function :  UART_ReadAvailableByte
  * @brief    :  Read number of bytes pending in app_usart rx buffer
  * @parameter:  None
  * @retVal   :  Number of bytes
@@ -225,7 +226,6 @@ uint16_t UART_ReadAvailableByte(uint8_t uartNum){
 }
 
 /**
- * @function :  UART_ReadByte
  * @brief    :  Read byte in buffer
  * @parameter:  byte: destination byte
  * @retVal   :  true if success. Otherwise, buffer is empty
@@ -242,7 +242,6 @@ uint8_t UART_ReadByte(uint8_t uartNum, uint8_t* byte){
 }
 
 /**
- * @function :  UART_Flush
  * @brief    :  Flush received data buffer
  * @parameter:  uart number
  * @retVal   :  None

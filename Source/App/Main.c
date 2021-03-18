@@ -24,13 +24,14 @@
 #include "Hard/WDG/WDG.h"
 
 #include "Components/RA02Lora/RA02Lora.h"
+#include "Components/MAX6675/MAX6675.h"
 
 /******************************************************************************/
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
 #define LORA_TX 0
-#define LORA_RX (!LORA_TX)
+#define LORA_RX 0//(!LORA_TX)
 
 /******************************************************************************/
 /*                              PRIVATE DATA                                  */
@@ -55,7 +56,6 @@ void mainProcessEventFunction(void);
 /******************************************************************************/
 
 /**
- * @func   MAIN_Init
  * @brief  Initializes main
  * @param  None
  * @retval None
@@ -80,10 +80,11 @@ static void MAIN_Init(void){
 	else{
 		DEBUG_PRINTLN("RA02 Lora initialized failure");
 	}
+	
+	MAX6675_Init();
 }
 
 /**
- * @func   Main
  * @brief  Main
  * @param  None
  * @retval None
@@ -107,7 +108,6 @@ int main(void){
 }
 
 /**
- * @func   mainProcessEventFunction
  * @brief  Main process event
  * @param  None
  * @retval None
@@ -126,6 +126,9 @@ void mainProcessEventFunction(void){
 			DEBUG_PRINT("%02X ", read);
 		}
 	#endif
+	
+	float temp = MAX6675_ReadCelsius();
+	DEBUG_PRINT("%.02f", temp);
 	
 	EVENT_SetDelayMS(mainProcessEventControl, 1000);
 }

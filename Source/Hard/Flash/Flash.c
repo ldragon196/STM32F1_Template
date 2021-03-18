@@ -44,7 +44,6 @@
 /******************************************************************************/
 
 /**
- * @func   FLASH_WriteData
  * @brief  Programs a word at a specified address
  *         See FLASH_ProgramWord description
  * @param  Specifies the address to be programmed and data
@@ -63,7 +62,6 @@ void FLASH_WriteWord(uint32_t address, uint32_t data){
 
 
 /**
- * @func   FLASH_ReadWord
  * @brief  Read a word at a specified address
  * @param  Specifies the address to be programmed and data output
  * @retval None
@@ -77,7 +75,6 @@ void FLASH_ReadWord(uint32_t address, uint32_t* data){
 
 
 /**
- * @func   FLASH_WriteBytes
  * @brief  Programs n bytes at a specified address
  * @param  Specifies the address to be programmed, pointer and length of data
  * @retval None
@@ -106,7 +103,6 @@ void FLASH_WriteBytes(uint32_t address, uint8_t* data, uint32_t length){
 }
 
 /**
- * @func   FLASH_ReadBytes
  * @brief  Read n bytes at a specified address
  * @param  Specifies the address to be programmed, pointer and length of data
  * @retval None
@@ -128,7 +124,6 @@ void FLASH_ReadBytes(uint32_t address, uint8_t* data, uint32_t length){
 
 
 /**
- * @func   FLASH_ErasePages
  * @brief  Erase number of pages
  * @param  Specifies the address of pages and size
  * @retval None

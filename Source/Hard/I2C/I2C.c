@@ -47,7 +47,6 @@ static void I2C_Stop(I2CBase_t* i2cConfig);
 /******************************************************************************/
 
 /**
- * @func   I2C_InitAsMaster
  * @brief  Init I2C as master mode
  * @param  I2C number
  * @retval None
@@ -99,7 +98,6 @@ void I2C_InitAsMaster(I2CBase_t* i2cConfig){
 }
 
 /**
- * @func   I2C_Start
  * @brief  I2C start
  * @param  None
  * @retval None
@@ -122,7 +120,6 @@ I2C_ERROR:
 }
 
 /**
- * @func   I2C_Stop
  * @brief  I2C stop
  * @param  None
  * @retval None
@@ -141,7 +138,6 @@ I2C_ERROR:
 
 
 /**
- * @func   I2C_WriteData
  * @brief  Write n bytes
  * @param  I2C number
  *         slave address
@@ -178,7 +174,6 @@ I2C_ERROR:
 
 
 /**
- * @func   I2C_ReadRegMulti
  * @brief  Read register
  * @param  I2C number
  *         slave address

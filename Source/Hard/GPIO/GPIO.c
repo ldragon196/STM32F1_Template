@@ -40,7 +40,6 @@ GPIO_TypeDef* const PORT_GPIOx[GPIO_MAX_PORT] = PORT_GPIOx_CONFIG;
 /******************************************************************************/
 
 /**
- * @func   GPIO_PinMode
  * @brief  Set pin as mode
  * @param  Port and Pin
  *         mode
@@ -64,9 +63,6 @@ void GPIO_PinMode(uint8_t port, uint8_t pin, GPIOMode_TypeDef mode){
 }
 
 /**
- * @func   GPIO_PinHigh
- *         GPIO_PinLow
- *         GPIO_PinToggle
  * @brief  Set pin output
  * @param  Port and Pin
  * @retval None
@@ -85,7 +81,6 @@ void GPIO_PinToggle(uint8_t port, uint8_t pin){
 }
 
 /**
- * @func   GPIO_GetPinOutput
  * @brief  Get pin output
  * @param  Port and Pin
  * @retval Pin state
@@ -96,7 +91,6 @@ uint8_t GPIO_GetPinOutput(uint8_t port, uint8_t pin){
 }
 
 /**
- * @func   GPIO_GetPinInput
  * @brief  Get pin input
  * @param  Port and Pin
  * @retval Pin state

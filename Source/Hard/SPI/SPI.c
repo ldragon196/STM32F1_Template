@@ -46,7 +46,6 @@ SPI_ReceiveHandler handlerSPISlaveReceive = NULL;
 /******************************************************************************/
 
 /**
- * @func   SPI_Init
  * @brief  Init spi as master mode
  * @param  SPI number
  * @retval None
@@ -102,7 +101,6 @@ void SPI_InitAsMaster(SPIBase_t* spiConfig){
 }
 
 /**
- * @func   SPI_Transfer
  * @brief  SPI transfer
  * @param  SPI number, Tx data
  * @retval Rx Data
@@ -129,7 +127,6 @@ uint8_t SPI_Transfer(SPIBase_t* spi, uint8_t byte){
 
 #if(SPI1_SLAVE_MODE_ENABLED|SPI1_SLAVE_MODE_ENABLED)
 /**
- * @func   SPI_Init
  * @brief  Init spi as slave mode
  * @param  SPI number
  * @retval None
@@ -203,7 +200,6 @@ void SPI_InitAsSlave(SPIBase_t* spiConfig, SPI_ReceiveHandler initFunc){
 }
 
 /**
- * @func   SPI_SlaveResponse
  * @brief  SPI slave transfer response
  * @param  SPI number, Tx data
  * @retval None

@@ -513,14 +513,14 @@
 
 
 #ifndef SPI2_ENABLED
-#define SPI2_ENABLED 0
+#define SPI2_ENABLED 1
 #endif
 
 // <q> SPI2_SLAVE_MODE_ENABLED  - SPI instance 2 enable slave mode
 
 
 #ifndef SPI2_SLAVE_MODE_ENABLED
-#define SPI2_SLAVE_MODE_ENABLED 1
+#define SPI2_SLAVE_MODE_ENABLED 0
 #endif
 
 // </e>
@@ -676,21 +676,14 @@
 #define VL53L0X_TIME_MEASURE 10
 #endif
 
-
-
 // </e>
+
+
 
 // <e> RA02_LORA_ENABLED - RA02 Lora module enable
 
 #ifndef RA02_LORA_ENABLED
 #define RA02_LORA_ENABLED 1
-#endif
-
-// <q> RA02_LORA_DEBUG_ENABLED - RA02 Lora module debug
-
-
-#ifndef RA02_LORA_DEBUG_ENABLED
-#define RA02_LORA_DEBUG_ENABLED 1
 #endif
 
 // <o> RA02_LORA_SPI_USED  - SPI used
@@ -702,18 +695,21 @@
 #define RA02_LORA_SPI_USED 1
 #endif
 
-#define RA02_LORA_NSS_PORT         COM_SPI1_NSS_PORT
-#define RA02_LORA_NSS_PIN          COM_SPI1_NSS_PIN
-#define RA02_LORA_RESET_PORT       GPIO_PORTA
-#define RA02_LORA_RESET_PIN        8
+// </e>
+
+
+// <e> MAX6675_ENABLED - Max6675 temperature sensor module enable
+
+#ifndef MAX6675_ENABLED
+#define MAX6675_ENABLED 1
+#endif
 
 // </e>
 
 
-// </h> 
 
 
-
+// </h>
 
 
 // <h> Debug
