@@ -636,6 +636,54 @@ LoraFifo_t LoraFifo;
 /******************************************************************************/
 
 /**
+ * @brief  Read data vailable
+ * @param  None
+ * @retval None
+ */
+
+boolean RA02LORA_Read(uint8_t* byte){
+	if(LoraFifo.count > 0){
+		*byte = LoraFifo.data[LoraFifo.tail];
+		LoraFifo.tail = (LoraFifo.tail + 1) % LORA_FIFO_SIZE;
+		LoraFifo.count--;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/**
+ * @brief  Read byte is available in rx buffer
+ * @param  None
+ * @retval Byte is available in rx buffer
+ */
+
+uint16_t RA02LORA_Available(void){
+	return LoraFifo.count;
+}
+
+/**
+ * @brief  Task for receive data
+ *         Run in explicit mode
+ * @param  None
+ * @retval None
+ */
+
+void RA02LORA_Task(void){
+	uint8_t read;
+	
+	if(RA02LORA_ParsePacket(0) > 0){
+		while(RA02LORA_ReadRxData(&read)){
+			/* Push data to buffer */
+			if(LoraFifo.count < LORA_FIFO_SIZE){
+				LoraFifo.data[LoraFifo.head] = read;
+				LoraFifo.head = (LoraFifo.head + 1) % LORA_FIFO_SIZE;
+				LoraFifo.count++;
+			}
+		}
+	}
+}
+
+/**
  * @brief  RA02 Lora module initialization
  * @param  None
  * @retval None
@@ -680,53 +728,41 @@ boolean RA02LORA_Init(void){
 	return TRUE;
 }
 
-/**
- * @brief  Task for receive data
- *         Run in explicit mode
- * @param  None
- * @retval None
- */
+/* Example
+	#define LORA_TX 0
+	#define LORA_RX (!LORA_TX)
 
-void RA02LORA_Task(void){
-	uint8_t read;
-	
-	if(RA02LORA_ParsePacket(0) > 0){
-		while(RA02LORA_ReadRxData(&read)){
-			/* Push data to buffer */
-			if(LoraFifo.count < LORA_FIFO_SIZE){
-				LoraFifo.data[LoraFifo.head] = read;
-				LoraFifo.head = (LoraFifo.head + 1) % LORA_FIFO_SIZE;
-				LoraFifo.count++;
-			}
+	init(){
+		if(RA02LORA_Init()){
+			RA02LORA_SetFrequency(434000000);      // 434MHZ
+		}
+		else{
+			DEBUG_PRINTLN("RA02 Lora initialized failure");
 		}
 	}
-}
 
-/**
- * @brief  Read data vailable
- * @param  None
- * @retval None
- */
-
-boolean RA02LORA_Read(uint8_t* byte){
-	if(LoraFifo.count > 0){
-		*byte = LoraFifo.data[LoraFifo.tail];
-		LoraFifo.tail = (LoraFifo.tail + 1) % LORA_FIFO_SIZE;
-		LoraFifo.count--;
-		return TRUE;
+	loop(){
+		#if LORA_RX
+		RA02LORA_Task();
+		#endif
 	}
-	return FALSE;
-}
+	#if LORA_TX
+	char data[] = "LongHD";
+	RA02LORA_SendData((uint8_t*) data, strlen(data));
+	
+	#elif LORA_RX
+		uint8_t read;
+		while(RA02LORA_Read(&read)){
+			DEBUG_PRINT("%02X ", read);
+		}
+	#endif 
 
-/**
- * @brief  Read byte is available in rx buffer
- * @param  None
- * @retval Byte is available in rx buffer
+
  */
 
-uint16_t RA02LORA_Available(void){
-	return LoraFifo.count;
-}
+
+
+
 
 #endif
 

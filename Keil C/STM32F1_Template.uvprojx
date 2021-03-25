@@ -516,6 +516,16 @@
               <FileType>5</FileType>
               <FilePath>..\Source\Components\MAX6675\MAX6675.h</FilePath>
             </File>
+            <File>
+              <FileName>ADXL357.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Components\ADXL357\ADXL357.c</FilePath>
+            </File>
+            <File>
+              <FileName>ADXL357.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Source\Components\ADXL357\ADXL357.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

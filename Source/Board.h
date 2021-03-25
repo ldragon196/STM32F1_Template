@@ -172,19 +172,19 @@ enum _STM32F103_GPIO_PORT_{
 #define RA02_LORA_NSS_PORT                   GPIO_PORTA
 #define RA02_LORA_NSS_PIN                    4
 #define RA02_LORA_RESET_PORT                 GPIO_PORTA
-#define RA02_LORA_RESET_PIN                  8
+#define RA02_LORA_RESET_PIN                  3
 
 // MAX6675
-
 #define MAX6675_CS_PORT                      GPIO_PORTB
-#define MAX6675_CS_PIN                       12
+#define MAX6675_CS_PIN                       7
 #define MAX6675_CLK_PORT                     GPIO_PORTB
-#define MAX6675_CLK_PIN                      13
+#define MAX6675_CLK_PIN                      8
 #define MAX6675_SO_PORT                      GPIO_PORTB
-#define MAX6675_SO_PIN                       14
+#define MAX6675_SO_PIN                       9
 
-
-
+// ADXL355
+#define ADXL357_NSS_PORT                     GPIO_PORTB
+#define ADXL357_NSS_PIN                      12
 
 
 /******************************************************************************/

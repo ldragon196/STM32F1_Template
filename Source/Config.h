@@ -707,6 +707,22 @@
 // </e>
 
 
+// <e> ADXL357_ENABLED - ADXL357 enable
+
+#ifndef ADXL357_ENABLED
+#define ADXL357_ENABLED 1
+#endif
+
+// <o> ADXL357_SPI_USED  - SPI used
+
+// <1=> SPI 1  
+// <2=> SPI 2 
+
+#ifndef ADXL357_SPI_USED
+#define ADXL357_SPI_USED 2
+#endif
+
+// </e>
 
 
 // </h>

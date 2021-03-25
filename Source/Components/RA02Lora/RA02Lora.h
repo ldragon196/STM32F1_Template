@@ -22,15 +22,8 @@
 /*                     EXPORTED TYPES and DEFINITIONS                         */
 /******************************************************************************/
 
-#define LORA_ENABLE_LOW
-
-#ifdef LORA_ENABLE_LOW
 #define LORA_ENABLE()            GPIO_PinLow(RA02_LORA_NSS_PORT, RA02_LORA_NSS_PIN)
 #define LORA_DISABLE()           GPIO_PinHigh(RA02_LORA_NSS_PORT, RA02_LORA_NSS_PIN)
-#else
-#define LORA_ENABLE()            GPIO_PinHigh(RA02_LORA_NSS_PORT, RA02_LORA_NSS_PIN)
-#define LORA_DISABLE()           GPIO_PinLow(RA02_LORA_NSS_PORT, RA02_LORA_NSS_PIN)
-#endif
 
 /* Registers address in Lora mode */
 
