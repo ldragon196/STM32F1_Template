@@ -98,13 +98,11 @@ static void Lora_WriteRegister(uint8_t address, uint8_t value){
  */
 
 void RA02LORA_Reset(void){
-	uint32_t delay = 1000;
 	GPIO_PinLow(RA02_LORA_RESET_PORT, RA02_LORA_RESET_PIN);
-	while(delay--){}
+	delay_us(LORA_RESET_DELAY_US);
 	
-	delay = 10000;
 	GPIO_PinHigh(RA02_LORA_RESET_PORT, RA02_LORA_RESET_PIN);
-	while(delay--){}
+	delay_us(LORA_RESET_DELAY_US);
 }
 
 /**************** FREQUENCY ****************/
